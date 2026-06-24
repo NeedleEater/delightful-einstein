@@ -4,10 +4,9 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
-  flexRender,
-  ColumnDef,
-  SortingState
+  flexRender
 } from '@tanstack/react-table';
+import type { ColumnDef, SortingState } from '@tanstack/react-table';
 import type { OrganicMonthlySummary } from '../data/caseStudyData';
 import { Download, Search, FileText, ArrowUpDown } from 'lucide-react';
 
