@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import {
   ResponsiveContainer,
-  BarChart,
+  ComposedChart,
   Bar,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -11,6 +12,31 @@ import {
 } from 'recharts';
 import type { Ga4MonthlyChannel } from '../data/caseStudyData';
 import { Info } from 'lucide-react';
+
+const CPC_DATA: Record<string, number> = {
+  '2024-09': 1.25,
+  '2024-10': 1.97,
+  '2024-11': 2.52,
+  '2024-12': 1.94,
+  '2025-01': 1.04,
+  '2025-02': 0.75,
+  '2025-03': 0.53,
+  '2025-04': 0.57,
+  '2025-05': 0.62,
+  '2025-06': 1.13,
+  '2025-07': 1.19,
+  '2025-08': 1.49,
+  '2025-09': 1.85,
+  '2025-10': 2.27,
+  '2025-11': 2.68,
+  '2025-12': 3.00,
+  '2026-01': 2.83,
+  '2026-02': 3.03,
+  '2026-03': 3.14,
+  '2026-04': 3.15,
+  '2026-05': 3.33,
+  '2026-06': 3.45,
+};
 
 interface ChannelStackedChartProps {
   channelData: Ga4MonthlyChannel[];
@@ -59,7 +85,8 @@ export const ChannelStackedChart: React.FC<ChannelStackedChartProps> = ({ channe
           month,
           month_label,
           year,
-          total: 0
+          total: 0,
+          cpc: CPC_DATA[month] || null
         };
         // Initialize all channels to 0
         channels.forEach((ch) => {
@@ -106,7 +133,7 @@ export const ChannelStackedChart: React.FC<ChannelStackedChartProps> = ({ channe
       {/* Chart */}
       <div className="h-[360px] mb-6">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={transformedData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+          <ComposedChart data={transformedData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
             <XAxis
               dataKey="month_label"
@@ -115,10 +142,20 @@ export const ChannelStackedChart: React.FC<ChannelStackedChartProps> = ({ channe
               tick={{ fontSize: 10, fill: '#64748b' }}
             />
             <YAxis
+              yAxisId="left"
               tickLine={false}
               axisLine={false}
               tick={{ fontSize: 10, fill: '#64748b' }}
               tickFormatter={(val) => val.toLocaleString()}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fontSize: 10, fill: '#d97706' }}
+              tickFormatter={(val) => `$${val.toFixed(2)}`}
+              label={{ value: 'Avg. CPC (Paid Ads)', angle: 90, position: 'insideRight', style: { fontSize: 10, fill: '#d97706', fontWeight: 600 } }}
             />
             <Tooltip
               contentStyle={{
@@ -129,20 +166,36 @@ export const ChannelStackedChart: React.FC<ChannelStackedChartProps> = ({ channe
               }}
               labelStyle={{ fontWeight: 600, color: '#1e293b', marginBottom: '4px', fontSize: '12px' }}
               itemStyle={{ fontSize: '11px', padding: '2px 0' }}
-              formatter={(value: any, name: any) => [Math.round(value).toLocaleString(), name]}
+              formatter={(value: any, name: any) => {
+                if (name === 'Avg. CPC (Paid Search)') {
+                  return [`$${parseFloat(value).toFixed(2)}`, name];
+                }
+                return [Math.round(value).toLocaleString(), name];
+              }}
             />
             <Legend verticalAlign="top" height={40} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
             
             {channels.map((channel) => (
               <Bar
                 key={channel}
+                yAxisId="left"
                 dataKey={channel}
                 stackId="a"
                 fill={channelColors[channel] || '#94a3b8'}
                 barSize={24}
               />
             ))}
-          </BarChart>
+
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey="cpc"
+              stroke="#d97706"
+              strokeWidth={3}
+              dot={{ r: 3, strokeWidth: 1, fill: 'white' }}
+              name="Avg. CPC (Paid Search)"
+            />
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
 
@@ -150,7 +203,7 @@ export const ChannelStackedChart: React.FC<ChannelStackedChartProps> = ({ channe
       <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl text-xs text-slate-500 flex items-start gap-2.5">
         <Info className="w-4 h-4 text-dq-dark flex-shrink-0 mt-0.5" />
         <p className="leading-relaxed">
-          <strong>Key Insight:</strong> Some months saw heavy Paid Search campaigns driving high volume (for example, in <strong>May 2025</strong> when Paid Search generated <strong>1,949</strong> sessions). However, Organic Search remained a remarkably steady and reliable engine, producing <strong>348 sessions</strong>, <strong>238 engaged sessions</strong>, <strong>8 appointment requests</strong>, and <strong>17 calls</strong>. Even as paid budgets fluctuated, organic traffic maintained high conversion efficiency.
+          <strong>Key Insight:</strong> The spikes in Paid Search traffic (e.g., early-to-mid 2025) were driven by temporarily low average Cost-Per-Click (CPC) rates, which dipped as low as <strong>$0.53 - $0.75</strong>. However, as Google Ads CPC rates surged over <strong>350%</strong> to peak at <strong>$3.33 - $3.45</strong> by mid-2026, paid traffic became significantly more expensive. In contrast, as the practice's SEO matured, Organic Search became the primary source of steady, high-intent leads and conversions at zero incremental cost—demonstrating superior long-term ROI.
         </p>
       </div>
     </div>
