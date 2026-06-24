@@ -8,8 +8,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
-  ReferenceDot
+  Legend
 } from 'recharts';
 import type { OrganicMonthlySummary } from '../data/caseStudyData';
 import { ArrowUpRight, TrendingUp, Info } from 'lucide-react';
@@ -148,7 +147,7 @@ export const ComboTrendChart: React.FC<ComboTrendChartProps> = ({ data }) => {
                 }}
                 labelStyle={{ fontWeight: 600, color: '#1e293b', marginBottom: '4px', fontSize: '12px' }}
                 itemStyle={{ fontSize: '11px', padding: '2px 0' }}
-                formatter={(value: any, name: any, props: any) => {
+                formatter={(value: any, _name: any, props: any) => {
                   const metric = props.dataKey as ChartMetric;
                   return formatTooltipValue(value, metric);
                 }}

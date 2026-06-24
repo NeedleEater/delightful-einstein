@@ -29,7 +29,7 @@ export const Timeline: React.FC<TimelineProps> = ({ milestones }) => {
       </div>
 
       <div className="relative border-l-2 border-slate-100 ml-4 md:ml-8 pl-6 md:pl-10 pb-4 flex flex-col gap-8">
-        {sortedMilestones.map((m, index) => {
+        {sortedMilestones.map((m) => {
           return (
             <div key={m.sort_order} className="relative group">
               {/* Timeline marker */}

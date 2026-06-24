@@ -7,12 +7,11 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ReferenceLine,
   Label
 } from 'recharts';
 import type { VisibilityMonthlyWide, VisibilityBenchmark } from '../data/caseStudyData';
-import { ArrowUpRight, ShieldCheck, HelpCircle } from 'lucide-react';
+import { ShieldCheck, HelpCircle } from 'lucide-react';
 
 interface VisibilityLineChartProps {
   chartData: VisibilityMonthlyWide[];

@@ -13,11 +13,11 @@ export const Takeaway: React.FC = () => {
           The Specialty Patient Journey
         </span>
         <h2 className="text-2xl md:text-3xl font-extrabold text-white mt-4">
-          Why This Matters for Endodontic Practices
+          Why Search Visibility Matters for Specialty Practices
         </h2>
         <p className="text-sm text-slate-300 mt-3 leading-relaxed">
-          Endodontic practices depend heavily on general dentist referrals, but patient habits have changed. 
-          referred patients do not just call immediately—they research online first.
+          For specialized medical and dental practices, being visible at the exact moment a patient needs treatment is key.
+          When patients search for specialized services in their area, high search visibility ensures your practice surfaces first.
         </p>
       </div>
 
@@ -30,9 +30,9 @@ export const Takeaway: React.FC = () => {
             <UserPlus className="w-6 h-6 text-dq-accent" />
           </div>
           <span className="text-xs font-bold text-dq-accent uppercase tracking-wider mb-1">Step 1</span>
-          <h3 className="text-base font-bold text-white mb-2">Referral or Symptom</h3>
+          <h3 className="text-base font-bold text-white mb-2">Patient Needs Specialized Care</h3>
           <p className="text-xs text-slate-300 leading-relaxed">
-            A general dentist refers a patient for specialized root canal therapy, or a patient experiences acute tooth pain and seeks an endodontist.
+            A patient experiences symptoms requiring endodontic treatment (such as tooth pain) or needs to find a highly rated specialist in their area.
           </p>
           <div className="hidden lg:flex absolute top-1/2 -right-4 -translate-y-1/2 text-white/35 z-20">
             <ArrowRight className="w-5 h-5" />
@@ -45,9 +45,9 @@ export const Takeaway: React.FC = () => {
             <Search className="w-6 h-6 text-dq-accent" />
           </div>
           <span className="text-xs font-bold text-dq-accent uppercase tracking-wider mb-1">Step 2</span>
-          <h3 className="text-base font-bold text-white mb-2">Online Search &amp; Validation</h3>
+          <h3 className="text-base font-bold text-white mb-2">High-Intent Service Search</h3>
           <p className="text-xs text-slate-300 leading-relaxed">
-            Before booking, the patient searches for the practice name online to verify location, read patient reviews, and evaluate website credibility.
+            Instead of relying on brand recognition alone, the practice surfaces at the top of Google when patients search for local services (e.g., "root canal Plano" or "endodontist near me").
           </p>
           <div className="hidden lg:flex absolute top-1/2 -right-4 -translate-y-1/2 text-white/35 z-20">
             <ArrowRight className="w-5 h-5" />
@@ -60,16 +60,16 @@ export const Takeaway: React.FC = () => {
             <PhoneCall className="w-6 h-6 text-dq-accent" />
           </div>
           <span className="text-xs font-bold text-dq-accent uppercase tracking-wider mb-1">Step 3</span>
-          <h3 className="text-base font-bold text-white mb-2">Call or Appointment Request</h3>
+          <h3 className="text-base font-bold text-white mb-2">Direct Patient Inquiry</h3>
           <p className="text-xs text-slate-200 leading-relaxed font-medium">
-            Satisfied with the online presentation, the patient clicks to call or submits an online appointment request, converting into an active patient lead.
+            Impressed by the practice's prominent search visibility and authoritative website content, the patient clicks to call or requests an appointment directly, converting into a lead.
           </p>
         </div>
 
       </div>
 
       <div className="max-w-3xl mx-auto text-center border-t border-white/10 pt-6 relative z-10 text-xs md:text-sm text-slate-300 leading-relaxed">
-        <strong>DentalQore</strong> helped North Texas Endodontic Associates strengthen that digital validation step with measurable organic traffic, stronger engagement, and more patient contact actions from search.
+        <strong>DentalQore</strong> helped North Texas Endodontic Associates maximize search visibility, capturing high-intent traffic directly from search engines and driving more direct patient inquiries.
       </div>
     </div>
   );

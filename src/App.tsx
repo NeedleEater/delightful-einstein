@@ -1,37 +1,36 @@
 import { useState, useMemo } from 'react';
 import { caseStudyData } from './data/caseStudyData';
 import { KpiCard } from './components/KpiCard';
-import { TimeframeControls } from './components/TimeframeControls';
-import type { ViewMode, MetricFamily, YearFilter } from './components/TimeframeControls';
 import { ComboTrendChart } from './components/ComboTrendChart';
 import { VisibilityLineChart } from './components/VisibilityLineChart';
 import { ChannelStackedChart } from './components/ChannelStackedChart';
 import { QualityComparisonChart } from './components/QualityComparisonChart';
-import { MonthlyDataTable } from './components/MonthlyDataTable';
 import { Timeline } from './components/Timeline';
 import { Takeaway } from './components/Takeaway';
 
 import {
   TrendingUp,
   Award,
-  Users,
   MousePointerClick,
-  CheckCircle,
-  FileBarChart,
   ArrowRight,
   Sparkles,
-  PhoneCall,
-  CalendarDays,
   Menu,
   X
 } from 'lucide-react';
 
+interface KpiData {
+  label: string;
+  value: number;
+  isPercent?: boolean;
+  prefix?: string;
+  suffix?: string;
+  changeText?: string;
+  changeType?: 'positive' | 'negative' | 'neutral';
+  description: string;
+  icon: React.ReactNode;
+}
+
 function App() {
-  // Global Filter States
-  const [viewMode, setViewMode] = useState<ViewMode>('Overall');
-  const [metricFamily, setMetricFamily] = useState<MetricFamily>('Traffic');
-  const [yearFilter, setYearFilter] = useState<YearFilter>('All');
-  const [selectedMonth, setSelectedMonth] = useState<string>('All');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const {
@@ -40,113 +39,54 @@ function App() {
     organic_monthly_summary,
     visibility_monthly_wide,
     visibility_benchmarks,
-    ga4_period_summary,
     key_callouts
   } = caseStudyData;
 
-  // Available months for selector based on current year filter
-  const availableMonths = useMemo(() => {
-    return organic_monthly_summary
-      .filter((d) => yearFilter === 'All' || d.year.toString() === yearFilter)
-      .map((d) => ({
-        value: d.month,
-        label: d.month_label
-      }));
-  }, [organic_monthly_summary, yearFilter]);
-
-  // If year filter changes, ensure selectedMonth is still valid
-  const handleYearChange = (newYear: YearFilter) => {
-    setYearFilter(newYear);
-    setSelectedMonth('All');
-  };
-
-  // Filter ga4_monthly_channel data based on year/month
-  const filteredChannelData = useMemo(() => {
-    let result = ga4_monthly_channel;
-
-    if (viewMode === 'Overall') {
-      return result;
-    }
-
-    if (yearFilter !== 'All') {
-      result = result.filter((d) => d.year.toString() === yearFilter);
-    }
-
-    if (viewMode === 'Monthly' && selectedMonth !== 'All') {
-      result = result.filter((d) => d.month === selectedMonth);
-    }
-
-    return result;
-  }, [ga4_monthly_channel, viewMode, yearFilter, selectedMonth]);
-
-  // Filter organic_monthly_summary data based on year
-  const filteredOrganicSummary = useMemo(() => {
-    let result = organic_monthly_summary;
-
-    if (viewMode === 'Overall') {
-      return result;
-    }
-
-    if (yearFilter !== 'All') {
-      result = result.filter((d) => d.year.toString() === yearFilter);
-    }
-
-    return result;
-  }, [organic_monthly_summary, viewMode, yearFilter]);
-
-  // Filter visibility_monthly_wide data based on year
-  const filteredVisibilityData = useMemo(() => {
-    let result = visibility_monthly_wide;
-
-    if (viewMode === 'Overall') {
-      return result;
-    }
-
-    if (yearFilter !== 'All') {
-      result = result.filter((d) => {
-        // e.g. "2024-09" starts with "2024"
-        return d.month.startsWith(yearFilter);
-      });
-    }
-
-    return result;
-  }, [visibility_monthly_wide, viewMode, yearFilter]);
-
-  // Dynamic KPI calculations based on selected timeframe
-  const currentKpis = useMemo(() => {
-    // Default to overall period summary
-    if (viewMode === 'Overall') {
-      const overall = ga4_period_summary.find((p) => p.period === 'Overall GA4 Period');
-      return {
-        sessions: overall?.organic_sessions || 7096,
-        engagedSessions: overall?.organic_engaged_sessions || 4600,
-        leadActions: overall?.organic_lead_actions || 412,
-        share: overall?.organic_share_of_lead_actions_pct || 42.56,
-        engagementRate: overall?.organic_weighted_engagement_rate_pct || 64.83
-      };
-    }
-
-    // Dynamic calculations for filtered datasets
-    let targetSummary = filteredChannelData.filter((d) => d.channel === 'Organic Search');
-    
-    // Sum stats
-    const sessions = targetSummary.reduce((sum, d) => sum + d.sessions, 0);
-    const engagedSessions = targetSummary.reduce((sum, d) => sum + d.engaged_sessions, 0);
-    const leadActions = targetSummary.reduce((sum, d) => sum + d.lead_actions, 0);
-    
-    // Get total lead actions for share calculation
-    const totalLeadActions = filteredChannelData.reduce((sum, d) => sum + d.lead_actions, 0);
-    const share = totalLeadActions > 0 ? (leadActions / totalLeadActions) * 100 : 0;
-    const engagementRate = sessions > 0 ? (engagedSessions / sessions) * 100 : 0;
-
-    return {
-      sessions,
-      engagedSessions,
-      leadActions,
-      share,
-      engagementRate
-    };
-  }, [filteredChannelData, viewMode, ga4_period_summary]);
+  // Hero KPI cards focusing on overall growth and comparisons
+  const kpis = useMemo<KpiData[]>(() => {
+    return [
+      {
+        label: 'Search Visibility Growth',
+        value: 98,
+        isPercent: false,
+        prefix: '+',
+        suffix: '%',
+        changeText: 'Top-Tier Growth',
+        changeType: 'positive',
+        description: 'Latest 12 Month Avg vs. Pre-Client Benchmark (792 vs. 400 visits/mo)',
+        icon: <TrendingUp className="w-5 h-5" />
+      },
+      {
+        label: 'Year 1 Traffic Growth',
+        value: 54,
+        isPercent: false,
+        prefix: '+',
+        suffix: '%',
+        changeText: 'Steady Ramp',
+        changeType: 'positive',
+        description: 'DentalQore Year 1 Avg vs. Pre-Client Benchmark (615 vs. 400 visits/mo)',
+        icon: <Award className="w-5 h-5" />
+      },
+      {
+        label: 'Organic Lead Share',
+        value: 42.56,
+        isPercent: true,
+        changeText: 'Primary Traffic Channel',
+        changeType: 'positive',
+        description: 'Organic search share of all tracked patient inquiries',
+        icon: <MousePointerClick className="w-5 h-5" />
+      },
+      {
+        label: 'Peak Conversion Rate',
+        value: 11.22,
+        isPercent: true,
+        changeText: '2.4x Baseline Rate',
+        changeType: 'positive',
+        description: 'Peak organic session key event rate (May 2026)',
+        icon: <Sparkles className="w-5 h-5" />
+      }
+    ];
+  }, []);
 
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
@@ -162,41 +102,33 @@ function App() {
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 no-print">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-dq-dark text-white font-extrabold text-lg select-none">
-                Q
+            {/* Top Left: Real Logo on black box background */}
+            <div className="px-3.5 py-2 bg-slate-950 rounded-xl flex items-center justify-center shadow-sm select-none border border-slate-800/40">
+              <img src="/dentalqore-logo.png" alt="DentalQore" className="h-4 w-auto object-contain" />
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="hidden md:flex items-center gap-1">
+                {(['Overview', 'Visibility', 'Trends', 'Channel-Mix', 'Takeaway'] as const).map((link) => (
+                  <button
+                    key={link}
+                    onClick={() => scrollToSection(link.toLowerCase())}
+                    className="px-3 py-2 text-xs font-semibold text-slate-500 hover:text-dq-dark transition-colors duration-200"
+                  >
+                    {link.replace('-', ' ')}
+                  </button>
+                ))}
               </div>
-              <span className="text-sm font-extrabold tracking-tight text-slate-800 uppercase">
-                Dental<span className="text-dq-blue">Qore</span>
-              </span>
-            </div>
 
-            <div className="hidden md:flex items-center gap-1">
-              {(['Overview', 'Trends', 'Channel-Mix', 'Data-Table', 'Takeaway'] as const).map((link) => (
+              {/* Mobile menu button */}
+              <div className="flex md:hidden">
                 <button
-                  key={link}
-                  onClick={() => scrollToSection(link.toLowerCase())}
-                  className="px-3 py-2 text-xs font-semibold text-slate-500 hover:text-dq-dark transition-colors duration-200"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="text-slate-600 hover:text-dq-dark p-2"
                 >
-                  {link.replace('-', ' ')}
+                  {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </button>
-              ))}
-              <button
-                onClick={() => scrollToSection('cta')}
-                className="ml-3 px-4 py-2 bg-dq-dark text-white hover:bg-slate-700 rounded-xl text-xs font-semibold shadow-sm transition-all duration-200"
-              >
-                Request Review
-              </button>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="flex md:hidden">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="text-slate-600 hover:text-dq-dark p-2"
-              >
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
+              </div>
             </div>
           </div>
         </div>
@@ -204,7 +136,7 @@ function App() {
         {/* Mobile menu drawer */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-slate-100 bg-white px-4 pt-2 pb-4 flex flex-col gap-2 shadow-inner">
-            {(['Overview', 'Trends', 'Channel-Mix', 'Data-Table', 'Takeaway'] as const).map((link) => (
+            {(['Overview', 'Visibility', 'Trends', 'Channel-Mix', 'Takeaway'] as const).map((link) => (
               <button
                 key={link}
                 onClick={() => scrollToSection(link.toLowerCase())}
@@ -213,12 +145,6 @@ function App() {
                 {link.replace('-', ' ')}
               </button>
             ))}
-            <button
-              onClick={() => scrollToSection('cta')}
-              className="w-full text-center mt-2 py-2.5 bg-dq-dark text-white hover:bg-slate-700 rounded-xl text-xs font-semibold"
-            >
-              Request Review
-            </button>
           </div>
         )}
       </header>
@@ -248,55 +174,35 @@ function App() {
 
               <div className="mt-8 flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <button
-                  onClick={() => scrollToSection('cta')}
+                  onClick={() => scrollToSection('visibility')}
                   className="px-6 py-3.5 bg-dq-dark hover:bg-slate-700 text-white rounded-2xl text-xs font-bold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer"
                 >
-                  Request a Growth Review
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
-                <button
-                  onClick={() => scrollToSection('trends')}
-                  className="px-6 py-3.5 bg-white border border-slate-200 hover:border-slate-300 text-slate-700 rounded-2xl text-xs font-bold shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
-                >
                   Explore Performance Data
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </div>
 
             {/* Right side KPI Cards */}
             <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <KpiCard
-                label="Organic Sessions"
-                value={currentKpis.sessions}
-                animate={viewMode === 'Overall'}
-                icon={<Users className="w-5 h-5" />}
-                description="Total organic search traffic sessions"
-              />
-              <KpiCard
-                label="Engaged Sessions"
-                value={currentKpis.engagedSessions}
-                animate={viewMode === 'Overall'}
-                icon={<TrendingUp className="w-5 h-5" />}
-                description="Organic sessions with high engagement"
-              />
-              <KpiCard
-                label="Lead Actions"
-                value={currentKpis.leadActions}
-                animate={viewMode === 'Overall'}
-                icon={<PhoneCall className="w-5 h-5" />}
-                description="Appointment requests + Click-to-calls"
-              />
-              <KpiCard
-                label="Organic Lead Share"
-                value={currentKpis.share}
-                isPercent={true}
-                animate={viewMode === 'Overall'}
-                icon={<MousePointerClick className="w-5 h-5" />}
-                description="Share of total website lead actions"
-              />
+              {kpis.map((kpi, index) => (
+                <KpiCard
+                  key={index}
+                  label={kpi.label}
+                  value={kpi.value}
+                  isPercent={kpi.isPercent}
+                  prefix={kpi.prefix}
+                  suffix={kpi.suffix}
+                  changeText={kpi.changeText}
+                  changeType={kpi.changeType}
+                  animate={true}
+                  icon={kpi.icon}
+                  description={kpi.description}
+                />
+              ))}
               <div className="sm:col-span-2 text-center mt-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                 <span className="text-[10px] font-semibold text-slate-400">
-                  ⚡ Hero KPIs represent the <strong className="text-slate-600">{viewMode}</strong> view. Use the dashboard controls below to filter.
+                  ⚡ Hero KPIs reflect the overall impact of the DentalQore SEO program. Scroll down to explore trends.
                 </span>
               </div>
             </div>
@@ -305,83 +211,40 @@ function App() {
         </div>
       </section>
 
-      {/* Main Dashboard Control Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full -mt-6">
-        <TimeframeControls
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          metricFamily={metricFamily}
-          setMetricFamily={setMetricFamily}
-          yearFilter={yearFilter}
-          setYearFilter={handleYearChange}
-          selectedMonth={selectedMonth}
-          setSelectedMonth={setSelectedMonth}
-          availableMonths={availableMonths}
-        />
-      </div>
-
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1 w-full">
-        {/* Dynamic Sections Based on Focus Toggle */}
-        
-        {/* Focus: Traffic / Trends */}
-        {metricFamily === 'Traffic' && (
-          <div id="trends" className="animate-fadeIn">
-            <ComboTrendChart data={filteredOrganicSummary} />
-          </div>
-        )}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1 w-full pt-12">
+        {/* Visibility Chart Section */}
+        <section id="visibility" className="mb-12 scroll-mt-20">
+          <VisibilityLineChart
+            chartData={visibility_monthly_wide}
+            benchmarks={visibility_benchmarks}
+          />
+        </section>
 
-        {/* Focus: Engagement */}
-        {metricFamily === 'Engagement' && (
-          <div id="engagement" className="animate-fadeIn">
-            {/* Show quality comparisons focusing on engagement */}
-            <QualityComparisonChart channelData={filteredChannelData} />
-            <ComboTrendChart data={filteredOrganicSummary} />
-          </div>
-        )}
+        {/* Monthly SEO Trend Section */}
+        <section id="trends" className="mb-12 scroll-mt-20">
+          <ComboTrendChart data={organic_monthly_summary} />
+        </section>
 
-        {/* Focus: Lead Actions */}
-        {metricFamily === 'Lead Actions' && (
-          <div id="leads" className="animate-fadeIn">
-            <ComboTrendChart data={filteredOrganicSummary} />
-            <Takeaway />
-          </div>
-        )}
+        {/* Channel Mix Section */}
+        <section id="channel-mix" className="mb-12 scroll-mt-20">
+          <ChannelStackedChart channelData={ga4_monthly_channel} />
+        </section>
 
-        {/* Focus: Organic Visibility */}
-        {metricFamily === 'Organic Visibility' && (
-          <div id="visibility" className="animate-fadeIn">
-            <VisibilityLineChart
-              chartData={filteredVisibilityData}
-              benchmarks={visibility_benchmarks}
-            />
-          </div>
-        )}
+        {/* Quality Comparison Section */}
+        <section className="mb-12">
+          <QualityComparisonChart channelData={ga4_monthly_channel} />
+        </section>
 
-        {/* Focus: Channel Comparison */}
-        {metricFamily === 'Channel Comparison' && (
-          <div id="channel-mix" className="animate-fadeIn">
-            <ChannelStackedChart channelData={filteredChannelData} />
-            <QualityComparisonChart channelData={filteredChannelData} />
-          </div>
-        )}
-
-        {/* Section divider and additional components shown in secondary layers */}
-        
         {/* SEO Growth Timeline */}
-        <div className="mt-8">
+        <section className="mb-12">
           <Timeline milestones={key_callouts} />
-        </div>
+        </section>
 
         {/* Specialty Practice Takeaway Visual Flow */}
-        <div id="takeaway" className="mt-8">
+        <section id="takeaway" className="mb-12 scroll-mt-20">
           <Takeaway />
-        </div>
-
-        {/* Interactive Monthly Data Table */}
-        <div id="data-table" className="mt-8">
-          <MonthlyDataTable data={organic_monthly_summary} />
-        </div>
+        </section>
 
         {/* Overall Impact Summary Section (emphasizing overall trends at the end) */}
         <section id="impact" className="mt-16 bg-white rounded-3xl p-8 border border-slate-100 shadow-sm print-break-inside-avoid">
@@ -415,45 +278,16 @@ function App() {
             </div>
           </div>
         </section>
-
-        {/* Final CTA section */}
-        <section id="cta" className="mt-12 bg-slate-900 text-white rounded-3xl p-8 md:p-12 text-center relative overflow-hidden print-break-inside-avoid">
-          {/* Accent decoration */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-1 bg-dq-accent" />
-          
-          <div className="max-w-2xl mx-auto relative z-10">
-            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-              Want to See What Organic Growth Could Look Like for Your Practice?
-            </h2>
-            <p className="text-sm text-slate-300 mt-4 leading-relaxed">
-              DentalQore helps dental and specialty practices build stronger websites, improve search visibility, 
-              and turn high-intent visitors into measurable patient opportunities.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <button className="w-full sm:w-auto px-6 py-3.5 bg-dq-accent hover:bg-sky-200 text-dq-dark rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer">
-                Request a Growth Review
-              </button>
-              <button className="w-full sm:w-auto px-6 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer">
-                View More Case Studies
-              </button>
-            </div>
-          </div>
-        </section>
-
       </main>
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-100 py-12 no-print">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-dq-dark text-white font-extrabold text-lg select-none">
-                  Q
-                </div>
-                <span className="text-sm font-extrabold tracking-tight text-slate-800 uppercase">
-                  Dental<span className="text-dq-blue">Qore</span>
-                </span>
+              {/* Footer: Real Logo on black box background */}
+              <div className="px-3.5 py-2 bg-slate-950 rounded-xl flex items-center justify-center shadow-sm select-none border border-slate-800/40 w-fit mb-3">
+                <img src="/dentalqore-logo.png" alt="DentalQore" className="h-4 w-auto object-contain" />
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Empowering dental and specialty practices with state-of-the-art websites, SEO visibility, and patient acquisition growth tools.
@@ -467,16 +301,6 @@ function App() {
                 <li><a href="#" className="hover:text-dq-dark">Search Engine Optimization</a></li>
                 <li><a href="#" className="hover:text-dq-dark">Patient Acquisition Tools</a></li>
                 <li><a href="#" className="hover:text-dq-dark">Analytics &amp; ROI Dashboards</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4">Case Studies</h4>
-              <ul className="flex flex-col gap-2.5 text-xs text-slate-400">
-                <li><a href="#" className="hover:text-dq-dark">NTEA Plano Case Study</a></li>
-                <li><a href="#" className="hover:text-dq-dark">General Dentistry Growth</a></li>
-                <li><a href="#" className="hover:text-dq-dark">Pediatric Dental Visibility</a></li>
-                <li><a href="#" className="hover:text-dq-dark">Orthodontic Conversion Stats</a></li>
               </ul>
             </div>
 

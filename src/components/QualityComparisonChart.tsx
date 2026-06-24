@@ -192,7 +192,7 @@ export const QualityComparisonChart: React.FC<QualityComparisonChartProps> = ({ 
       <div className="mt-6 pt-4 border-t border-slate-100 flex items-start gap-2.5 text-xs text-slate-500 bg-slate-50/50 p-3 rounded-xl">
         <Info className="w-4 h-4 text-dq-dark flex-shrink-0 mt-0.5" />
         <p className="leading-relaxed">
-          <strong>For a specialty practice, quality matters more than raw website volume.</strong> Organic Search repeatedly produced strong engagement rates and conversion activity because users searching for endodontic specialties are typically in immediate need of treatment or looking to validate a doctor referral.
+          <strong>For a specialty practice, quality matters more than raw website volume.</strong> Organic Search repeatedly produced strong engagement rates and conversion activity because users searching for endodontic specialties are typically in immediate need of treatment and actively looking for high-quality local care.
         </p>
       </div>
     </div>
