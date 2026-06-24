@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend
 } from 'recharts';
-import { Ga4MonthlyChannel } from '../data/caseStudyData';
+import type { Ga4MonthlyChannel } from '../data/caseStudyData';
 import { Info } from 'lucide-react';
 
 interface ChannelStackedChartProps {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyCallout } from '../data/caseStudyData';
+import type { KeyCallout } from '../data/caseStudyData';
 import { Calendar, Award, Star, ArrowUpRight, TrendingUp, CheckCircle } from 'lucide-react';
 
 interface TimelineProps {

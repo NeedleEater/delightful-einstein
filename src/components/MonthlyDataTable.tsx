@@ -8,7 +8,7 @@ import {
   ColumnDef,
   SortingState
 } from '@tanstack/react-table';
-import { OrganicMonthlySummary } from '../data/caseStudyData';
+import type { OrganicMonthlySummary } from '../data/caseStudyData';
 import { Download, Search, FileText, ArrowUpDown } from 'lucide-react';
 
 interface MonthlyDataTableProps {

@@ -1,0 +1,19 @@
+- [x] Set up Vite project with React and TypeScript (`create-vite`)
+- [x] Configure Tailwind CSS
+- [x] Ingest case study data into a local TypeScript file (`src/data/caseStudyData.ts`)
+- [x] Implement utility functions (formatting, aggregations, CSV exports)
+- [x] Create UI components
+    - [x] `KpiCard` (with counter animation for hero metrics)
+    - [x] `TimeframeControls` (filter toolbar)
+    - [x] `ComboTrendChart` (monthly SEO trends)
+    - [x] `VisibilityLineChart` (organic visibility + benchmark overlays)
+    - [x] `ChannelStackedChart` (traffic channel mix)
+    - [x] `QualityComparisonChart` (quality comparison)
+    - [x] `MonthlyDataTable` (sortable, searchable, exportable table)
+    - [x] `Timeline` (SEO growth milestones)
+    - [x] `Takeaway` (specialty practice visual workflow)
+- [x] Assemble dashboard in `src/App.tsx`
+- [x] Add header/navigation and footer
+- [x] Verify build and functionality
+    - [x] Run typescript checks and production build
+    - [x] Perform manual functionality verification

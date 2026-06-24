@@ -11,7 +11,7 @@ import {
   Legend,
   ReferenceDot
 } from 'recharts';
-import { OrganicMonthlySummary } from '../data/caseStudyData';
+import type { OrganicMonthlySummary } from '../data/caseStudyData';
 import { ArrowUpRight, TrendingUp, Info } from 'lucide-react';
 
 interface ComboTrendChartProps {

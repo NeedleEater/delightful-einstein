@@ -11,7 +11,7 @@ import {
   ReferenceLine,
   Label
 } from 'recharts';
-import { VisibilityMonthlyWide, VisibilityBenchmark } from '../data/caseStudyData';
+import type { VisibilityMonthlyWide, VisibilityBenchmark } from '../data/caseStudyData';
 import { ArrowUpRight, ShieldCheck, HelpCircle } from 'lucide-react';
 
 interface VisibilityLineChartProps {

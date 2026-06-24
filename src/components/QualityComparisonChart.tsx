@@ -9,7 +9,7 @@ import {
   Tooltip,
   Cell
 } from 'recharts';
-import { Ga4MonthlyChannel } from '../data/caseStudyData';
+import type { Ga4MonthlyChannel } from '../data/caseStudyData';
 import { Sparkles, Info } from 'lucide-react';
 
 interface QualityComparisonChartProps {

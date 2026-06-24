@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { caseStudyData } from './data/caseStudyData';
 import { KpiCard } from './components/KpiCard';
-import { TimeframeControls, ViewMode, MetricFamily, YearFilter } from './components/TimeframeControls';
+import { TimeframeControls } from './components/TimeframeControls';
+import type { ViewMode, MetricFamily, YearFilter } from './components/TimeframeControls';
 import { ComboTrendChart } from './components/ComboTrendChart';
 import { VisibilityLineChart } from './components/VisibilityLineChart';
 import { ChannelStackedChart } from './components/ChannelStackedChart';
